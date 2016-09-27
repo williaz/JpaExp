@@ -31,8 +31,11 @@ public class TransactionManagerConfig {
         tm.setDataSource(dataSource);
         tm.setEntityManagerFactory(entityManagerFactoryBean);
 
+<<<<<<< HEAD
         return tm;
 
+=======
+>>>>>>> origin/master
     }
 
 }
