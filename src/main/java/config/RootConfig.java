@@ -2,14 +2,20 @@ package config;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.context.annotation.Bean;
+
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 
@@ -20,19 +26,10 @@ import static org.springframework.orm.jpa.vendor.Database.ORACLE;
  * BootStrap JPA
  */
 @Configuration
-
+@ComponentScan
+@EnableTransactionManagement
 public class RootConfig {
-    @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(
-                      DataSource dataSource, JpaVendorAdapter jpaVendorAdapter){
 
-        LocalContainerEntityManagerFactoryBean emfb=new LocalContainerEntityManagerFactoryBean();
-        emfb.setDataSource(dataSource);
-        emfb.setJpaVendorAdapter(jpaVendorAdapter);
-        emfb.setPackagesToScan("domain");
-        return emfb;
-
-    }
 
     @Bean
     public BasicDataSource dataSource(){
@@ -59,6 +56,32 @@ public class RootConfig {
 
     }
 
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(
+            DataSource dataSource, JpaVendorAdapter jpaVendorAdapter){
+
+        LocalContainerEntityManagerFactoryBean factory=new LocalContainerEntityManagerFactoryBean();
+        factory.setDataSource(dataSource);
+        factory.setJpaVendorAdapter(jpaVendorAdapter);
+        factory.setPackagesToScan(new String[]{"domain"});
+        return factory;
+
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactoryBean){
+        JpaTransactionManager tm = new JpaTransactionManager();
+        tm.setEntityManagerFactory(entityManagerFactoryBean);
+
+        return tm;
+
+    }
+
+
+    @Bean
+    public PersistenceExceptionTranslationPostProcessor exceptionTranslation(){
+        return new PersistenceExceptionTranslationPostProcessor();
+    }
 
 
 

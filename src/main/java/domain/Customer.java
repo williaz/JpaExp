@@ -7,8 +7,10 @@ import java.util.Date;
 /**
  * Created by williaz on 9/26/16.
  */
-@Entity(name="CUSTOMER")
+@Entity
+@Table(name="CUSTOMER")
 public class Customer implements Serializable {
+
     @Id
     @Column(name="CUS_ID", nullable=false)
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,6 +21,11 @@ public class Customer implements Serializable {
     @Column(name="LAST_NAME", length=50)
     private String lastName;
 
+
+
+    @Embedded
+    private Address address;
+    /*
     private String street;
     @Column(nullable=false)
     private String appt;
@@ -26,6 +33,7 @@ public class Customer implements Serializable {
     private String city;
     @Column(name="ZIP_CODE", nullable=false)
     private String zipCode;
+    */
     @Column(name="CUST_TYPE", nullable=false)
     private String custType;
     @Version
@@ -38,10 +46,7 @@ public class Customer implements Serializable {
                 "custId=" + custId +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", street='" + street + '\'' +
-                ", appt='" + appt + '\'' +
-                ", city='" + city + '\'' +
-                ", zipCode='" + zipCode + '\'' +
+                ", address=" + address +
                 ", custType='" + custType + '\'' +
                 ", updatedTime=" + updatedTime +
                 '}';
@@ -70,6 +75,8 @@ public class Customer implements Serializable {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
+    /*
 
     public String getStreet() {
         return street;
@@ -102,7 +109,14 @@ public class Customer implements Serializable {
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
+    */
+    public Address getAddress() {
+        return address;
+    }
 
+    public void setAddress(Address address) {
+        this.address = address;
+    }
     public String getCustType() {
         return custType;
     }
