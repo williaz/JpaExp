@@ -29,6 +29,7 @@ public class Order {
     @OneToOne(optional = false, cascade = CascadeType.ALL,
             mappedBy = "order", targetEntity = Invoice.class)
     private Invoice invoice;
+
     @Version
     @Column(name = "LAST_UPDATED_TIME")
     private Date updatedTime;
@@ -40,14 +41,32 @@ public class Order {
         this.orderDt = orderDt;
     }
 
+    public Order() {
+    }//!!!hibernate: InstantiationException: No default constructor for entity
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Order)) return false;
+
+        Order order = (Order) o;
+
+        return orderId == order.orderId;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (orderId ^ (orderId >>> 32));
+    }
+
+
+
 
     public long getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(long orderId) {
-        this.orderId = orderId;
-    }
 
     public long getCustId() {
         return custId;

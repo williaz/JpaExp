@@ -27,7 +27,7 @@ import static org.springframework.orm.jpa.vendor.Database.ORACLE;
  * BootStrap JPA
  */
 @Configuration
-@EnableJpaRepositories(basePackages = {"dao"})
+@EnableJpaRepositories(basePackages = {"dao","exp"})
 @ComponentScan
 @EnableTransactionManagement
 public class RootConfig {
@@ -71,7 +71,7 @@ public class RootConfig {
         LocalContainerEntityManagerFactoryBean factory=new LocalContainerEntityManagerFactoryBean();
         factory.setDataSource(dataSource());
         factory.setJpaVendorAdapter(adapter);
-        factory.setPackagesToScan(new String[]{"domain"});
+        factory.setPackagesToScan(new String[]{"domain","exp"});
         factory.afterPropertiesSet();//must have to successfully create factory!!!!
 
         return factory.getObject();

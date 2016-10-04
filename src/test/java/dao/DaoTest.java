@@ -30,9 +30,12 @@ public class DaoTest {
         Date dt=java.sql.Date.valueOf(today);
         Order order =new Order(1,100,"meaningwhat",dt);
         Order persistedOrder=orderRepository.save(order);
+        Assert.assertEquals(order,persistedOrder);
+        /*
         long id=persistedOrder.getOrderId();
         persistedOrder=orderRepository.findOne(id);
         Assert.assertEquals(order,persistedOrder);
+        */
 
     }
 

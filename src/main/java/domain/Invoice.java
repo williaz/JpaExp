@@ -14,8 +14,10 @@ public class Invoice {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long invoiceId;
 
-    @Column(name = "ORDER_ID")
-    private long orderId;
+//    @Column(name = "ORDER_ID")
+//    private long orderId;
+    //One table has a foreign key column that references
+    // the primary key of the associated table.
 
     @Column(name = "AMOUNT_DUE", precision = 2)
     private double amountDue;
@@ -34,27 +36,36 @@ public class Invoice {
     private Date updatedTime;
 
     @OneToOne(optional = false)
-    @JoinColumn(name = "ORDER_ID")
+    @MapsId  //Persist two entities with shared key (when one entity holds a foreign key to the other) using @MapsId annotation.
+    @JoinColumn(name = "ORDER_ID")//FK:foreign Key
     private Order order;
 
     //
 
 
+    public Invoice(double amountDue, Date orderRaisedDt, Date orderSettledDt, Date orderCancelledDt, Order order) {
+        this.amountDue = amountDue;
+        this.orderRaisedDt = orderRaisedDt;
+        this.orderSettledDt = orderSettledDt;
+        this.orderCancelledDt = orderCancelledDt;
+        this.order = order;
+    }
+
+    public Invoice() {
+    }
+
     public long getInvoiceId() {
         return invoiceId;
     }
 
-    public void setInvoiceId(long invoiceId) {
-        this.invoiceId = invoiceId;
-    }
 
-    public long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(long orderId) {
-        this.orderId = orderId;
-    }
+//    public long getOrderId() {
+//        return orderId;
+//    }
+//
+//    public void setOrderId(long orderId) {
+//        this.orderId = orderId;
+//    }
 
     public double getAmountDue() {
         return amountDue;
