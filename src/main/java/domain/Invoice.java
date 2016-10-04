@@ -37,6 +37,7 @@ public class Invoice {
     @JoinColumn(name = "ORDER_ID")
     private Order order;
 
+    //
 
 
     public long getInvoiceId() {

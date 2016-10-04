@@ -33,6 +33,13 @@ public class Order {
     @Column(name = "LAST_UPDATED_TIME")
     private Date updatedTime;
 
+    public Order(long custId, double totPrice, String orderDesc, Date orderDt) {
+        this.custId = custId;
+        this.totPrice = totPrice;
+        this.orderDesc = orderDesc;
+        this.orderDt = orderDt;
+    }
+
 
     public long getOrderId() {
         return orderId;

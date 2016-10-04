@@ -7,6 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -26,6 +27,7 @@ import static org.springframework.orm.jpa.vendor.Database.ORACLE;
  * BootStrap JPA
  */
 @Configuration
+@EnableJpaRepositories(basePackages = {"dao"})
 @ComponentScan
 @EnableTransactionManagement
 public class RootConfig {
@@ -42,7 +44,7 @@ public class RootConfig {
 
         return ds;
     }
-
+    /*
     @Bean
     public JpaVendorAdapter jpaVendorAdapter(){
 
@@ -55,24 +57,32 @@ public class RootConfig {
         return adapter;
 
     }
-
+    */
+// return type is EntityManagerFactory, not LocalContainerEntityManagerFactoryBean
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(
-            DataSource dataSource, JpaVendorAdapter jpaVendorAdapter){
+    public EntityManagerFactory entityManagerFactory(){
 
+        HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+        adapter.setDatabase(ORACLE);
+        adapter.setShowSql(true);
+        adapter.setGenerateDdl(true); //auto table creation
+        adapter.setDatabasePlatform("org.hibernate.dialect.Oracle10gDialect"); //dialect for DB
+//
         LocalContainerEntityManagerFactoryBean factory=new LocalContainerEntityManagerFactoryBean();
-        factory.setDataSource(dataSource);
-        factory.setJpaVendorAdapter(jpaVendorAdapter);
+        factory.setDataSource(dataSource());
+        factory.setJpaVendorAdapter(adapter);
         factory.setPackagesToScan(new String[]{"domain"});
-        return factory;
+        factory.afterPropertiesSet();//must have to successfully create factory!!!!
+
+        return factory.getObject();
 
     }
 
     @Bean
-    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactoryBean){
-        JpaTransactionManager tm = new JpaTransactionManager();
-        tm.setEntityManagerFactory(entityManagerFactoryBean);
+    public PlatformTransactionManager transactionManager(){
 
+        JpaTransactionManager tm= new JpaTransactionManager();
+        tm.setEntityManagerFactory(entityManagerFactory());
         return tm;
 
     }
