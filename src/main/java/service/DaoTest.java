@@ -3,6 +3,8 @@ package service;
 import exp.*;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.util.List;
+
 /**
  * Created by williaz on 10/4/16.
  */
@@ -41,8 +43,8 @@ public class DaoTest {
         */
 //        Phone p1=phoneRepository.findOne(73L);
 //        System.out.println(p1.getPerson().getName());
-        Person1Repository person1Repository=context.getBean("person1Repository",Person1Repository.class);
-        Phone1Repository phone1Repository = context.getBean("phone1Repository",Phone1Repository.class);
+        PhoneDetailsRepository phoneDetailsRepository=context.getBean("phoneDetailsRepository",PhoneDetailsRepository.class);
+        Phone3Repository phone3Repository = context.getBean("phone3Repository",Phone3Repository.class);
 
 //        Person1 p1 = new Person1("Bo");
 //        Phone1 phone1= new Phone1("1231231234");
@@ -52,9 +54,33 @@ public class DaoTest {
 //        p1.getPhones().add(phone2);
 //
 //        person1Repository.save(p1);
-        phone1Repository.findOne(80L);
+        //phone1Repository.findOne(80L);
+
+//        Person2 person = new Person2("Austin");
+//        Phone2 phone1 = new Phone2( "123-456-7890" );
+//        Phone2 phone2 = new Phone2( "321-654-0987" );
+//
+//        person.addPhone( phone1 );
+//        person.addPhone( phone2 );
+//
+//        person2Repository.save(person);
+//        Person2 p2=person2Repository.findOne(82L);
+//        List<Phone2> phs= p2.getPhones();
+//        for(Phone2 pp: phs){
+//            System.out.println(pp.getNumber());
+//        }
+//        Phone2 phone2=phone2Repository.findOne(83L);
+//        System.out.println(phone2.getPerson().getName());
 
 
+//        PhoneDetails pd=new PhoneDetails("ATT","G4");
+//        phoneDetailsRepository.save(pd);
+//        Phone3 p3=new Phone3("7322311234");
+//        p3.setDetails(pd);
+//        phone3Repository.save(p3);
+        Phone3 p3=phone3Repository.findOne(87L);
+        System.out.println(p3.getDetails().getProvider());
+        phoneDetailsRepository.findOne(86L);
 
 
 

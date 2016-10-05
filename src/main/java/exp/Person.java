@@ -16,6 +16,8 @@ public class Person {
 
     private String name;
 
+    //no phones list
+
     public Person(String name) {
         this.name = name;
     }
