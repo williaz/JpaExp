@@ -28,7 +28,7 @@ import static org.springframework.orm.jpa.vendor.Database.ORACLE;
  */
 @Configuration
 @EnableJpaRepositories(basePackages = {"dao","exp"})
-@ComponentScan
+@ComponentScan(basePackages = {"dao","exp","domain","service"})
 @EnableTransactionManagement
 public class RootConfig {
 
