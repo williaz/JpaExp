@@ -36,19 +36,19 @@ public class Invoice {
     private Date updatedTime;
 
     @OneToOne(optional = false)
-    @MapsId  //Persist two entities with shared key (when one entity holds a foreign key to the other) using @MapsId annotation.
+    //@MapsId  //Persist two entities with shared key (when one entity holds a foreign key to the other) using @MapsId annotation.
     @JoinColumn(name = "ORDER_ID")//FK:foreign Key
     private Order order;
 
     //
 
 
-    public Invoice(double amountDue, Date orderRaisedDt, Date orderSettledDt, Date orderCancelledDt, Order order) {
+    public Invoice(double amountDue, Date orderRaisedDt, Date orderSettledDt, Date orderCancelledDt) {
         this.amountDue = amountDue;
         this.orderRaisedDt = orderRaisedDt;
         this.orderSettledDt = orderSettledDt;
         this.orderCancelledDt = orderCancelledDt;
-        this.order = order;
+
     }
 
     public Invoice() {

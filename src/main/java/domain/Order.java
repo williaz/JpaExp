@@ -5,6 +5,7 @@ import java.util.Date;
 
 /**
  * Created by williaz on 9/29/16.
+ * Order tak charge of Invoice's lefe
  */
 @Entity(name = "ORDERS")
 public class Order {
@@ -14,8 +15,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long orderId;
 
-    @Column(name = "CUST_ID")
-    private long custId;
+//    @Column(name = "CUST_ID")/// add field customer
+//    private long custId;
 
     @Column(name = "TOTAL_PRICE", precision = 2)
     private double totPrice;
@@ -26,16 +27,21 @@ public class Order {
     @Column(name = "ORDER_DATE")
     private Date orderDt;
 
-    @OneToOne(optional = false, cascade = CascadeType.ALL,
+    @OneToOne(optional = false, cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.LAZY,
             mappedBy = "order", targetEntity = Invoice.class)
     private Invoice invoice;
+
+
+    @ManyToOne(optional=false)
+    @JoinColumn(name="CUST_ID",referencedColumnName="CUST_ID")
+    private Customer customer;
 
     @Version
     @Column(name = "LAST_UPDATED_TIME")
     private Date updatedTime;
 
-    public Order(long custId, double totPrice, String orderDesc, Date orderDt) {
-        this.custId = custId;
+    public Order( double totPrice, String orderDesc, Date orderDt) {
+
         this.totPrice = totPrice;
         this.orderDesc = orderDesc;
         this.orderDt = orderDt;
@@ -60,21 +66,18 @@ public class Order {
         return (int) (orderId ^ (orderId >>> 32));
     }
 
+    public Customer getCustomer() {
+        return customer;
+    }
 
-
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 
     public long getOrderId() {
         return orderId;
     }
 
-
-    public long getCustId() {
-        return custId;
-    }
-
-    public void setCustId(long custId) {
-        this.custId = custId;
-    }
 
     public double getTotPrice() {
         return totPrice;
@@ -105,7 +108,15 @@ public class Order {
     }
 
     public void setInvoice(Invoice invoice) {
+        invoice.setOrder(this);
+
         this.invoice = invoice;
+    }
+    public void removeInvoice(){
+        if(this.invoice!=null){
+            this.setInvoice(null);
+            this.invoice=null;
+        }
     }
 
     public Date getUpdatedTime() {

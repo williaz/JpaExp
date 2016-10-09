@@ -2,17 +2,22 @@ package domain;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by williaz on 9/26/16.
+ * 1. a Customer enjoys a one-to-many relationship with an Order,
+ * whereas an Order has a many-to-one relationship with the Customer.
+ * 2. Customer take care of order persisting
  */
 @Entity
 @Table(name="CUSTOMER")
 public class Customer implements Serializable {
 
     @Id
-    @Column(name="CUS_ID", nullable=false)
+    @Column(name="CUST_ID", nullable=false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long custId;
 
@@ -40,6 +45,11 @@ public class Customer implements Serializable {
     @Column(name="LAST_UPDATED_TIME",nullable=false)
     private Date updatedTime;
 
+    @OneToMany(mappedBy="customer",targetEntity=Order.class,
+            cascade = CascadeType.ALL, orphanRemoval = true,
+            fetch=FetchType.EAGER)
+    private List<Order> orders = new ArrayList<>();
+
     @Override
     public String toString() {
         return "Customer{" +
@@ -50,6 +60,21 @@ public class Customer implements Serializable {
                 ", custType='" + custType + '\'' +
                 ", updatedTime=" + updatedTime +
                 '}';
+    }
+
+    public void addOrder(Order order){
+        orders.add(order);
+        order.setCustomer(this);
+    }
+
+    public void removceOrder(Order order){
+        orders.remove(order);
+        order.setCustomer(null);
+
+    }
+
+    public List<Order> getOrders() {
+        return orders;
     }
 
     public long getCustId() {
@@ -76,40 +101,7 @@ public class Customer implements Serializable {
         this.lastName = lastName;
     }
 
-    /*
 
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getAppt() {
-        return appt;
-    }
-
-    public void setAppt(String appt) {
-        this.appt = appt;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
-    */
     public Address getAddress() {
         return address;
     }
