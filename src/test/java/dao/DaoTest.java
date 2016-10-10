@@ -20,6 +20,7 @@ import java.util.List;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = RootConfig.class)
+@Transactional//rollback default true
 public class DaoTest {
     @Autowired
     private InvoiceRepository invoiceRepository;
@@ -34,17 +35,17 @@ public class DaoTest {
     private ProductRepository productRepository;
 
     @Test
-    @Ignore
+    @Transactional
     public void Test_PersistProductAndFindById_ExpectedTrue(){
         LocalDate today = LocalDate.now();
         Date dt = java.sql.Date.valueOf(today);
-        Product p1 = new Product("Mac 13", "13' macbook","800",dt);
+        Product p1 = new Product("Mac 20", "20' macbook3","1500",dt);
         Product p2 = productRepository.save(p1);
         p2 = productRepository.findOne(p2.getProdId());
 
         Assert.assertNotNull(p2);
     }
-
+    /*
     @Test
     @Transactional
     public void Test_OrderAndProductWithOrderDetalMapping_PersistOrder_ExpectedOrderDetainPersisted(){
@@ -61,9 +62,27 @@ public class DaoTest {
         Assert.assertTrue(order1.getProducts().contains(orderDetail));
 
     }
+    */
 
     @Test
-    @Ignore
+    @Transactional
+    public void Test_OrderAndProductWithOrderDetalMapping_PersistOrder_ExpectedOrderDetainPersisted(){
+
+        Order order1 = orderRepository.findOne(123L);
+        Product p = productRepository.findOne(141L);
+        Assert.assertEquals(141L,p.getProdId());
+        order1.addProduct(p);
+        order1=orderRepository.saveAndFlush(order1);
+
+        Assert.assertTrue(order1.getProductList().contains(p));
+
+
+
+
+    }
+
+    @Test
+   // @Ignore
     public void saveOrderThenFindCustomerFromOrder(){
 
 //        LocalDate today= LocalDate.now();
@@ -96,7 +115,7 @@ public class DaoTest {
     }
 
     @Test
-    @Ignore
+   // @Ignore
     public void saveAndFindByOrderId(){
         LocalDate today= LocalDate.now();
         LocalDate orderRaisedDt=today.plusDays(25L);

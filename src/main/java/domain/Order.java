@@ -39,10 +39,17 @@ public class Order implements Serializable{
     @JoinColumn(name="CUST_ID",referencedColumnName="CUST_ID")
     private Customer customer;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    //@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     //org.hibernate.loader.MultipleBagFetchException: cannot simultaneously fetch multiple bags:
     //the problem is that the JPA annotations are parsed not to allow more than 2 eagerly loaded collection.
-    private List<OrderDetail> products= new ArrayList<>();
+    //private List<OrderDetail> products= new ArrayList<>();
+    @ManyToMany
+    @JoinTable(name="ORDER_DETAIL",
+            joinColumns= @JoinColumn(name="ORDER_ID", referencedColumnName="ORDER_ID"),
+            inverseJoinColumns= @JoinColumn(name="PROD_ID", referencedColumnName="PROD_ID")
+    )
+    private List<Product> productList;
+
 
     @Version
     @Column(name = "LAST_UPDATED_TIME")
@@ -128,6 +135,22 @@ public class Order implements Serializable{
         }
     }
 
+    public List<Product> getProductList() {
+        return productList;
+    }
+
+    public void addProduct(Product product){
+        productList.add(product);
+        product.getOrderList().add(this);
+    }
+
+    public void removeProduct(Product product){
+        productList.remove(product);
+        product.getOrderList().remove(this);
+
+    }
+
+/*
     public List<OrderDetail> getProducts() {
         return products;
     }
@@ -145,7 +168,7 @@ public class Order implements Serializable{
         orderDetail.setOrder(null);
         orderDetail.setProduct(null);
     }
-
+*/
 
     public Date getUpdatedTime() {
         return updatedTime;

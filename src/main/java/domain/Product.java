@@ -28,9 +28,11 @@ public class Product implements Serializable{
     @Column(name = "LAST_UPDATED_TIME")
     private Date updatedTime;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderDetail> orders = new ArrayList<>();
+    //@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     //private List<OrderDetail> orders = new ArrayList<>();
+    //private List<OrderDetail> orders = new ArrayList<>();
+    @ManyToMany(mappedBy="productList")// no orhanRemoval
+    private List<Order> orderList;
 
     public Product(String prodName, String prodDescription, String price, Date updatedTime) {
         this.prodName = prodName;
@@ -46,9 +48,13 @@ public class Product implements Serializable{
         return prodId;
     }
 
-    public List<OrderDetail> getOrders() {
-        return orders;
+    public List<Order> getOrderList() {
+        return orderList;
     }
+
+    //    public List<OrderDetail> getOrders() {
+//        return orders;
+//    }
 
     public String getProdName() {
         return prodName;
