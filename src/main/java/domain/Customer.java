@@ -62,6 +62,22 @@ public class Customer implements Serializable {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Customer)) return false;
+
+        Customer customer = (Customer) o;
+
+        return custId == customer.custId;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (custId ^ (custId >>> 32));
+    }
+
     public void addOrder(Order order){
         orders.add(order);
         order.setCustomer(this);
@@ -79,10 +95,6 @@ public class Customer implements Serializable {
 
     public long getCustId() {
         return custId;
-    }
-
-    public void setCustId(long custId) {
-        this.custId = custId;
     }
 
     public String getFirstName() {

@@ -1,13 +1,14 @@
 package domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by williaz on 9/29/16.
  */
 @Entity(name = "ORDER_INVOICE")
-public class Invoice {
+public class Invoice implements Serializable{
 
     @Id
     @Column(name = "INVOICE_ID", nullable = false)
@@ -42,6 +43,22 @@ public class Invoice {
 
     //
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Invoice)) return false;
+
+        Invoice invoice = (Invoice) o;
+
+        return invoiceId == invoice.invoiceId;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (invoiceId ^ (invoiceId >>> 32));
+    }
 
     public Invoice(double amountDue, Date orderRaisedDt, Date orderSettledDt, Date orderCancelledDt) {
         this.amountDue = amountDue;

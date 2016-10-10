@@ -1,14 +1,17 @@
 package domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by williaz on 9/29/16.
  * Order tak charge of Invoice's lefe
  */
 @Entity(name = "ORDERS")
-public class Order {
+public class Order implements Serializable{
 
     @Id
     @Column(name = "ORDER_ID", nullable = false)
@@ -35,6 +38,11 @@ public class Order {
     @ManyToOne(optional=false)
     @JoinColumn(name="CUST_ID",referencedColumnName="CUST_ID")
     private Customer customer;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    //org.hibernate.loader.MultipleBagFetchException: cannot simultaneously fetch multiple bags:
+    //the problem is that the JPA annotations are parsed not to allow more than 2 eagerly loaded collection.
+    private List<OrderDetail> products= new ArrayList<>();
 
     @Version
     @Column(name = "LAST_UPDATED_TIME")
@@ -65,6 +73,7 @@ public class Order {
     public int hashCode() {
         return (int) (orderId ^ (orderId >>> 32));
     }
+
 
     public Customer getCustomer() {
         return customer;
@@ -118,6 +127,25 @@ public class Order {
             this.invoice=null;
         }
     }
+
+    public List<OrderDetail> getProducts() {
+        return products;
+    }
+
+    public void addProduct(Product product){
+        OrderDetail orderDetail = new OrderDetail(this, product);
+        products.add(orderDetail);
+        product.getOrders().add(orderDetail);
+    }
+
+    public void removeProduct(Product product){
+        OrderDetail orderDetail = new OrderDetail(this, product);
+        products.remove(orderDetail);
+        product.getOrders().remove(orderDetail);
+        orderDetail.setOrder(null);
+        orderDetail.setProduct(null);
+    }
+
 
     public Date getUpdatedTime() {
         return updatedTime;

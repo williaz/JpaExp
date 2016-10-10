@@ -1,10 +1,7 @@
 package dao;
 
 import config.RootConfig;
-import domain.Address;
-import domain.Customer;
-import domain.Invoice;
-import domain.Order;
+import domain.*;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -12,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -32,7 +30,40 @@ public class DaoTest {
     @Autowired
     private CustomerRepository customerRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
+
     @Test
+    @Ignore
+    public void Test_PersistProductAndFindById_ExpectedTrue(){
+        LocalDate today = LocalDate.now();
+        Date dt = java.sql.Date.valueOf(today);
+        Product p1 = new Product("Mac 13", "13' macbook","800",dt);
+        Product p2 = productRepository.save(p1);
+        p2 = productRepository.findOne(p2.getProdId());
+
+        Assert.assertNotNull(p2);
+    }
+
+    @Test
+    @Transactional
+    public void Test_OrderAndProductWithOrderDetalMapping_PersistOrder_ExpectedOrderDetainPersisted(){
+
+        Order order1 = orderRepository.findOne(68L);
+        Product p = productRepository.findOne(141L);
+        Assert.assertEquals(141L,p.getProdId());
+        order1.addProduct(p);
+        order1=orderRepository.saveAndFlush(order1);
+
+        OrderDetail orderDetail =new OrderDetail(order1, p);
+        Assert.assertEquals(orderDetail.getProduct().getProdId(),141L);
+
+        Assert.assertTrue(order1.getProducts().contains(orderDetail));
+
+    }
+
+    @Test
+    @Ignore
     public void saveOrderThenFindCustomerFromOrder(){
 
 //        LocalDate today= LocalDate.now();
